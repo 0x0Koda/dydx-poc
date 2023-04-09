@@ -11,7 +11,7 @@ if (!privateKey)
   // instantiate the SDK
 
   const squid = new Squid({
-    baseUrl: "https://squid-2gwsw7ij1-0xsquid.vercel.app", // for testnet use "https://testnet.api.0xsquid.com"
+    baseUrl: "http://localhost:3000", // "https://squid-2gwsw7ij1-0xsquid.vercel.app", // for testnet use "https://testnet.api.0xsquid.com"
   });
 
   // init the SDK
@@ -33,9 +33,9 @@ if (!privateKey)
       (t) => t.symbol === "AVAX" && t.chainId === chainId
     ).address,
     fromAmount: ethers.utils.parseUnits("0.1", "18").toString(),
-    toChain: "axelar-testnet-lisbon-3",
+    toChain: "axelar-testnet-lisbon-3", //"dydxprotocol-testnet",
     toToken: "uosmo",
-    toAddress: "axelar1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64d2ak9f",
+    toAddress: "axelar1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64d2ak9f", //"dydx1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64qa96wl", // "axelar1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64d2ak9f",
     slippage: 3.0,
     enableForecall: false,
     quoteOnly: false,

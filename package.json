@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.ts",
   "license": "MIT",
+  "scripts": {
+    "dev": "ts-node index.ts"
+  },
   "dependencies": {
     "@0xsquid/sdk": "^1.2.0",
     "@types/node": "^18.11.10",

@@ -3,6 +3,8 @@ import { ethers } from "ethers";
 import dotenv from "dotenv";
 dotenv.config();
 
+const addressNoble = "noble1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64p87kkx";
+const addressDydx = "dydx1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64qa96wl";
 const privateKey = process.env.PK!;
 if (!privateKey)
   throw new Error("No private key provided, pls include in .env file");
@@ -41,6 +43,20 @@ if (!privateKey)
 
   // "dydxprotocol-testnet"
   // "osmo-test-5"
+
+  // avax:avalanche to nusdc:dydx
+  /*  const params = {
+    fromChain: chainId,
+    fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    fromAmount: ethers.utils.parseUnits(".05", "18").toString(),
+    toChain: "dydxprotocol-testnet",
+    toToken:
+      "ibc/39549F06486BACA7494C9ACDD53CDD30AA9E723AB657674DBD388F867B61CA7B",
+    toAddress: "dydx1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64qa96wl",
+    slippage: 3.0,
+    enableForecall: false,
+    quoteOnly: false,
+  }; */
 
   /* // avax:avalanche > ausdc:axelar
   //
@@ -108,7 +124,7 @@ if (!privateKey)
 
   // ausdc:avalanche > nusdc:osmosis
   //
-  const params = {
+  /* const params = {
     fromChain: chainId,
     fromToken: "0x57f1c63497aee0be305b8852b354cec793da43bb",
     fromAmount: ethers.utils.parseUnits(".2111", "6").toString(),
@@ -116,6 +132,34 @@ if (!privateKey)
     toToken:
       "ibc/B3504E092456BA618CC28AC671A71FB08C6CA0FD0BE7C8A5B5A3E2DD933CC9E4",
     toAddress: "osmo1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64plcwc6",
+    slippage: 3.0,
+    enableForecall: false,
+    quoteOnly: false,
+  }; */
+
+  /* // ausdc:avalanche > nusdc:noble
+  const params = {
+    fromChain: chainId,
+    fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    fromAmount: ethers.utils.parseUnits(".05", "18").toString(),
+    toChain: "grand-1",
+    toToken: squid.tokens.find((t) => t.symbol.toLocaleLowerCase() === "usdc")!
+      .address,
+    toAddress: addressNoble,
+    slippage: 3.0,
+    enableForecall: false,
+    quoteOnly: false,
+  }; */
+
+  const params = {
+    fromChain: chainId,
+    fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    fromAmount: ethers.utils.parseUnits(".05", "18").toString(),
+    toChain: "dydxprotocol-testnet",
+    toToken: squid.tokens.find((t) => t.symbol.toLocaleLowerCase() === "usdc")!
+      .address,
+    toAddress: addressDydx,
+
     slippage: 3.0,
     enableForecall: false,
     quoteOnly: false,

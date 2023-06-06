@@ -137,21 +137,22 @@ if (!privateKey)
     quoteOnly: false,
   }; */
 
-  /* // ausdc:avalanche > nusdc:noble
+  // ausdc:avalanche > nusdc:noble
   const params = {
     fromChain: chainId,
     fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    fromAmount: ethers.utils.parseUnits(".05", "18").toString(),
+    fromAmount: ethers.utils.parseUnits("1", "18").toString(),
     toChain: "grand-1",
-    toToken: squid.tokens.find((t) => t.symbol.toLocaleLowerCase() === "usdc")!
-      .address,
+    toToken: squid.tokens.find(
+      (t) => t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === "grand-1"
+    )!.address,
     toAddress: addressNoble,
     slippage: 3.0,
     enableForecall: false,
     quoteOnly: false,
-  }; */
+  };
 
-  const params = {
+  /*  const params = {
     fromChain: chainId,
     fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     fromAmount: ethers.utils.parseUnits(".05", "18").toString(),
@@ -164,7 +165,8 @@ if (!privateKey)
     enableForecall: false,
     quoteOnly: false,
   };
-
+ */
+  console.log("route params", params);
   const { route } = await squid.getRoute(params);
   console.log(route.estimate.route);
   const tx = await squid.executeRoute({

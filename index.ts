@@ -12,40 +12,83 @@ if (!privateKey)
 (async () => {
   // instantiate the SDK
 
-  const baseUrl = "http://localhost:3000";
-  //const baseUrl = "https://squid-api-git-feat-dydx-poc2-v2-0xsquid.vercel.app";
+  const baseUrl = "https://squid-api-git-feat-cosmos-main-0xsquid.vercel.app";
 
   const squid = new Squid({
-    baseUrl: baseUrl, // "https://squid-api-git-feat-dydx-poc2-v2-0xsquid.vercel.app", // "https://squid-2gwsw7ij1-0xsquid.vercel.app", // for testnet use "https://testnet.api.0xsquid.com"
+    baseUrl: baseUrl,
   });
 
   // init the SDK
   await squid.init();
   console.log("Squid inited");
 
-  // use the RPC provider of the "from" chain
-
   //const chainId = 43113; //avalanche fuji testnet
   //const chainId = 5; //goerli
   //const chainId = 80001; //polygon mumbai
-  const chainId = 43113; //bsc testnet
+  const chainId = 43113; //avalanche fuji testnet
   const provider = ethers.getDefaultProvider(
     squid.chains.find((c) => c.chainId === chainId)!.rpc
   );
 
   const signer = new ethers.Wallet(privateKey, provider);
-  // "axelar-testnet-lisbon-3", //"dydxprotocol-testnet",
 
-  // "axelar1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64d2ak9f", //"dydx1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64qa96wl",
+  //
+  // avax:avalanche > ausdc:osmosis
+  //
+  /*  const toChainId = "osmo-test-5";
+  const params = {
+    fromChain: chainId,
+    fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    fromAmount: ethers.utils.parseUnits(".05", "18").toString(),
+    toChain: toChainId,
+    toToken: squid.tokens.find(
+      (t) => t.symbol.toLocaleLowerCase() === "ausdc" && t.chainId === toChainId
+    )!.address,
+    toAddress: "osmo1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64plcwc6",
+    slippage: 3.0,
+    enableForecall: false,
+    quoteOnly: false,
+  }; */
 
-  /* const usdc_dydx =
+  // ausdc:avalanche > nusdc:noble
+  const toChainId = "grand-1";
+  const params = {
+    fromChain: chainId,
+    fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    fromAmount: ethers.utils.parseUnits(".1", "18").toString(),
+    toChain: toChainId,
+    toToken: squid.tokens.find(
+      (t) => t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === toChainId
+    )!.address,
+    toAddress: addressNoble,
+    slippage: 3.0,
+    enableForecall: false,
+    quoteOnly: false,
+  };
+
+  console.log("route params", params);
+  const { route } = await squid.getRoute(params);
+  console.log(route.estimate.route);
+  const tx = (await squid.executeRoute({
+    signer,
+    route,
+  })) as ethers.providers.TransactionResponse;
+  const txReceipt = await tx.wait();
+  console.log(txReceipt.transactionHash);
+})();
+
+// "axelar-testnet-lisbon-3", //"dydxprotocol-testnet",
+
+// "axelar1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64d2ak9f", //"dydx1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64qa96wl",
+
+/* const usdc_dydx =
     "ibc/39549F06486BACA7494C9ACDD53CDD30AA9E723AB657674DBD388F867B61CA7B"; */
 
-  // "dydxprotocol-testnet"
-  // "osmo-test-5"
+// "dydxprotocol-testnet"
+// "osmo-test-5"
 
-  // avax:avalanche to nusdc:dydx
-  /*  const params = {
+// avax:avalanche to nusdc:dydx
+/*  const params = {
     fromChain: chainId,
     fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     fromAmount: ethers.utils.parseUnits(".05", "18").toString(),
@@ -58,7 +101,7 @@ if (!privateKey)
     quoteOnly: false,
   }; */
 
-  /* // avax:avalanche > ausdc:axelar
+/* // avax:avalanche > ausdc:axelar
   //
   const params = {
     fromChain: chainId,
@@ -72,24 +115,7 @@ if (!privateKey)
     quoteOnly: false,
   }; */
 
-  /* //
-  // avax:avalanche > ausdc:osmosis
-  //
-  const ausdc_osmosis =
-    "ibc/6F34E1BD664C36CE49ACC28E60D62559A5F96C4F9A6CCE4FC5A67B2852E24CFE";
-  const params = {
-    fromChain: chainId,
-    fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    fromAmount: ethers.utils.parseUnits(".05", "18").toString(),
-    toChain: "osmo-test-5",
-    toToken: ausdc_osmosis,
-    toAddress: "osmo1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64plcwc6",
-    slippage: 3.0,
-    enableForecall: false,
-    quoteOnly: false,
-  }; */
-
-  /*   //
+/*   //
   // avax:avalanche > nusdc:osmosis
   //
   const params = {
@@ -105,8 +131,8 @@ if (!privateKey)
     quoteOnly: false,
   }; */
 
-  //
-  /* // ausdc:avalanche > nusdc:osmosis
+//
+/* // ausdc:avalanche > nusdc:osmosis
   //
   const params = {
     fromChain: chainId,
@@ -122,9 +148,9 @@ if (!privateKey)
   };
  */
 
-  // ausdc:avalanche > nusdc:osmosis
-  //
-  /* const params = {
+// ausdc:avalanche > nusdc:osmosis
+//
+/* const params = {
     fromChain: chainId,
     fromToken: "0x57f1c63497aee0be305b8852b354cec793da43bb",
     fromAmount: ethers.utils.parseUnits(".2111", "6").toString(),
@@ -136,43 +162,3 @@ if (!privateKey)
     enableForecall: false,
     quoteOnly: false,
   }; */
-
-  // ausdc:avalanche > nusdc:noble
-  const params = {
-    fromChain: chainId,
-    fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    fromAmount: ethers.utils.parseUnits(".5", "18").toString(),
-    toChain: "grand-1",
-    toToken: squid.tokens.find(
-      (t) => t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === "grand-1"
-    )!.address,
-    toAddress: addressNoble,
-    slippage: 3.0,
-    enableForecall: false,
-    quoteOnly: false,
-  };
-
-  /*  const params = {
-    fromChain: chainId,
-    fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    fromAmount: ethers.utils.parseUnits(".05", "18").toString(),
-    toChain: "dydxprotocol-testnet",
-    toToken: squid.tokens.find((t) => t.symbol.toLocaleLowerCase() === "usdc")!
-      .address,
-    toAddress: addressDydx,
-
-    slippage: 3.0,
-    enableForecall: false,
-    quoteOnly: false,
-  };
- */
-  console.log("route params", params);
-  const { route } = await squid.getRoute(params);
-  console.log(route.estimate.route);
-  const tx = (await squid.executeRoute({
-    signer,
-    route,
-  })) as ethers.providers.TransactionResponse;
-  const txReceipt = await tx.wait();
-  console.log(txReceipt.transactionHash);
-})();

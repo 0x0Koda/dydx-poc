@@ -141,7 +141,7 @@ if (!privateKey)
   const params = {
     fromChain: chainId,
     fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    fromAmount: ethers.utils.parseUnits("1", "18").toString(),
+    fromAmount: ethers.utils.parseUnits(".5", "18").toString(),
     toChain: "grand-1",
     toToken: squid.tokens.find(
       (t) => t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === "grand-1"
@@ -169,10 +169,10 @@ if (!privateKey)
   console.log("route params", params);
   const { route } = await squid.getRoute(params);
   console.log(route.estimate.route);
-  const tx = await squid.executeRoute({
+  const tx = (await squid.executeRoute({
     signer,
     route,
-  });
+  })) as ethers.providers.TransactionResponse;
   const txReceipt = await tx.wait();
   console.log(txReceipt.transactionHash);
 })();

@@ -12,7 +12,8 @@ if (!privateKey)
 (async () => {
   // instantiate the SDK
 
-  const baseUrl = "https://squid-api-git-feat-cosmos-main-0xsquid.vercel.app";
+  //const baseUrl = "https://squid-api-git-feat-cosmos-main-0xsquid.vercel.app";
+  const baseUrl = "http://localhost:3000";
 
   const squid = new Squid({
     baseUrl: baseUrl,
@@ -51,16 +52,36 @@ if (!privateKey)
   }; */
 
   // ausdc:avalanche > nusdc:noble
-  const toChainId = "grand-1";
+  /* const toChainId = "grand-1";
   const params = {
     fromChain: chainId,
     fromToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-    fromAmount: ethers.utils.parseUnits(".1", "18").toString(),
+    fromAmount: ethers.utils.parseUnits(".5", "18").toString(),
     toChain: toChainId,
     toToken: squid.tokens.find(
       (t) => t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === toChainId
     )!.address,
     toAddress: addressNoble,
+    slippage: 3.0,
+    enableForecall: false,
+    quoteOnly: false,
+  }; */
+
+  //EVM to EVM
+  const fromChainId = 43113;
+  const toChainId = 5;
+  const params = {
+    fromChain: fromChainId,
+    fromToken: squid.tokens.find(
+      (t) =>
+        t.symbol.toLocaleLowerCase() === "wavax" && t.chainId === fromChainId
+    )!.address,
+    fromAmount: ethers.utils.parseUnits(".1", "18").toString(),
+    toChain: toChainId,
+    toToken: squid.tokens.find(
+      (t) => t.symbol.toLocaleLowerCase() === "ausdc" && t.chainId === toChainId
+    )!.address,
+    toAddress: "0xb13CD07B22BC5A69F8500a1Cb3A1b65618d50B22",
     slippage: 3.0,
     enableForecall: false,
     quoteOnly: false,

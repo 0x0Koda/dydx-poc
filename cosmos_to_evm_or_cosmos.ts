@@ -73,10 +73,10 @@ import {
     try {
       const status = await squid.getStatus({ transactionId: cosmosTx.transactionHash })
       console.log(status);
-      if (!!status.routeStatus && !!status.routeStatus.find((s) => s.chainName === "avalanche" && s.status === "success")) {
-        statusResult = true;
-        console.log("########### tx success ############")
-      }
+      /*  if (!!status.routeStatus && !!status.routeStatus.find((s) => s.chainName === "avalanche" && s.status === "success")) {
+         statusResult = true;
+         console.log("########### tx success ############")
+       } */
     } catch (error) {
       //do nothing
       console.log(error)

@@ -4,10 +4,11 @@
   "main": "index.ts",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node index.ts"
+    "dev": "ts-node index.ts",
+    "dev-mainnet": "ts-node index-mainnet.ts"
   },
   "dependencies": {
-    "@0xsquid/sdk": "1.4.3-beta.0",
+    "@0xsquid/sdk": "1.4.4-beta.1",
     "@types/node": "^18.11.10",
     "@types/typescript": "^2.0.0",
     "dotenv": "^16.0.3",

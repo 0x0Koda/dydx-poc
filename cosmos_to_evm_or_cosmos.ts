@@ -15,7 +15,7 @@ import {
   console.log("Squid inited");
 
   const mnemonic =
-    "muscle abuse foam practice elite foster glue immune steak thunder afraid soft";
+    "";
 
 
   const chainId = "osmo-test-5";

@@ -3,14 +3,14 @@ import { ethers } from "ethers";
 import dotenv from "dotenv";
 dotenv.config();
 
-const addressDydx = "put your dydx address here";
+const addressDydx = "dydx1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64qa96wl";
 const privateKey = process.env.PK!;
 if (!privateKey)
   throw new Error("No private key provided, pls include in .env file");
 
 (async () => {
   // instantiate the SDK
-  const baseUrl = "https://squid-api-git-feat-cosmos-main-0xsquid.vercel.app";
+  const baseUrl = "https://squid-api-git-feat-cosmos-maintestnet-0xsquid.vercel.app";
   const squid = new Squid({
     baseUrl: baseUrl,
   });
@@ -59,6 +59,7 @@ if (!privateKey)
       }
     } catch (error) {
       //do nothing
+      console.log(error)
     }
     await sleep(1);
   }

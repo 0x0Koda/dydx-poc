@@ -18,7 +18,7 @@ import {
     "";
 
 
-  const chainId = "osmo-test-5";
+  const chainId = "grand-1";
 
   const chain = squid.chains.find(
     (c) => c.chainId.toString().toLocaleLowerCase() === chainId
@@ -43,13 +43,13 @@ import {
   const routeParams = {
     fromChain: chainId,
     fromToken: squid.tokens.find(
-      (t) => t.symbol.toLocaleLowerCase() === "osmo" && t.chainId === chainId
+      (t) => t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === chainId
     )!.address,
     fromAmount: "555555",
     cosmosSignerAddress: signerAddress,
-    toChain: chainId,
+    toChain: "osmo-test-5",
     toToken: squid.tokens.find(
-      (t) => t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === chainId
+      (t) => t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === "osmo-test-5"
     )!.address,
     toAddress: "osmo1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64plcwc6",
     slippage: 3.0,

@@ -10,7 +10,9 @@ if (!privateKey)
 
 (async () => {
   // instantiate the SDK
-  const baseUrl = "https://squid-api-git-feat-cosmos-maintestnet-0xsquid.vercel.app";
+  //const baseUrl =
+  //  "https://squid-api-git-feat-cosmos-maintestnet-0xsquid.vercel.app";
+  const baseUrl = "http://localhost:3000";
   const squid = new Squid({
     baseUrl: baseUrl,
   });
@@ -35,6 +37,7 @@ if (!privateKey)
     slippage: 3.0,
     enableForecall: false,
     quoteOnly: false,
+    evmFallbackAddress: "0xb13CD07B22BC5A69F8500a1Cb3A1b65618d50B22",
   };
 
   console.log("route params", params);
@@ -45,27 +48,39 @@ if (!privateKey)
     route,
   })) as ethers.providers.TransactionResponse;
   const txReceipt = await tx.wait();
+  const txHash = txReceipt.transactionHash;
+  //const txHash =
+  //  "0xa3f446fe845f528fecc62ec6e860d02a9b9a515087d19b84632bcccc6e978bdd";
 
-  await sleep(3); //wait for axelar to index
+  await sleep(5); //wait for axelar to index
   let statusResult = false;
   while (!statusResult) {
-    console.log("getting tx status")
+    console.log(`getting tx status for: ${txHash}`);
     try {
-      const status = await squid.getStatus({ transactionId: txReceipt.transactionHash })
+      const status = (await squid.getStatus({
+        transactionId: txHash,
+      })) as any;
       console.log(status);
-      if (!!status.routeStatus && !!status.routeStatus.find((s) => s.chainName === "dydx" && s.status === "success")) {
-        statusResult = true;
-        console.log("########### tx success ############")
+      if (!!status.routeStatus) {
+        if (
+          !!status.routeStatus.find(
+            (s) => s.chainId === toChainId && s.status === "success"
+          )
+        ) {
+          statusResult = true;
+          console.log("########### tx success ############");
+          break;
+        }
       }
     } catch (error) {
-      //do nothing
-      console.log(error)
+      console.log("not found yet..");
+      await sleep(3);
+      //console.log(error);
     }
-    await sleep(1);
   }
   //console.log(`https://testnet.axelarscan.io/gmp/${txReceipt.transactionHash}`);
 })();
 
 const sleep = async (time: number) => {
   new Promise((r) => setTimeout(r, time * 1000));
-}
+};

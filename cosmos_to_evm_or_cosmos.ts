@@ -4,9 +4,16 @@ import {
   DirectSecp256k1HdWallet,
   OfflineDirectSigner,
 } from "@cosmjs/proto-signing";
+import dotenv from "dotenv";
+dotenv.config();
+
+const mnemonic = process.env.MNEMONIC!;
+if (!mnemonic)
+  throw new Error("No private key provided, pls include in .env file");
 
 (async () => {
-  const baseUrl = "https://squid-api-git-feat-cosmos-maintestnet-0xsquid.vercel.app";
+  const baseUrl =
+    "https://squid-api-git-feat-cosmos-maintestnet-0xsquid.vercel.app";
 
   const squid = new Squid({
     baseUrl: baseUrl,
@@ -14,14 +21,10 @@ import {
   await squid.init();
   console.log("Squid inited");
 
-  const mnemonic =
-    "";
-
-
-  const chainId = "grand-1";
+  const fromChainId = "grand-1";
 
   const chain = squid.chains.find(
-    (c) => c.chainId.toString().toLocaleLowerCase() === chainId
+    (c) => c.chainId.toString().toLocaleLowerCase() === fromChainId
   ) as CosmosChain;
 
   const getSignerFromMnemonic = async (): Promise<OfflineDirectSigner> => {
@@ -39,53 +42,66 @@ import {
   console.log(signerAddress);
   console.log("balances: ", await signingClient.getAllBalances(signerAddress));
 
-
+  const toChainId = "osmo-test-5";
   const routeParams = {
-    fromChain: chainId,
+    fromChain: fromChainId,
     fromToken: squid.tokens.find(
-      (t) => t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === chainId
+      (t) =>
+        t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === fromChainId
     )!.address,
     fromAmount: "555555",
     cosmosSignerAddress: signerAddress,
-    toChain: "osmo-test-5",
+    toChain: toChainId,
     toToken: squid.tokens.find(
-      (t) => t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === "osmo-test-5"
+      (t) => t.symbol.toLocaleLowerCase() === "usdc" && t.chainId === toChainId
     )!.address,
     toAddress: "osmo1zqnudqmjrgh9m3ec9yztkrn4ttx7ys64plcwc6",
     slippage: 3.0,
   };
 
-
   console.log("route params: ", routeParams);
 
-  const { route } = await squid.getRoute(routeParams);
+  /*   const { route } = await squid.getRoute(routeParams);
 
   const cosmosTx = (await squid.executeRoute({
     signer: signingClient,
     signerAddress,
     route,
-  })) as DeliverTxResponse;
+  })) as DeliverTxResponse; */
 
-  await sleep(3); //wait for axelar to index
+  //const txHash = cosmosTx.transactionHash;
+  const txHash =
+    "E0CD89D7E8D02046A36F2453991CD29F25C6BCB54CC89521288E50E0BDE4D761";
+
+  await sleep(5); //wait for axelar to index
   let statusResult = false;
   while (!statusResult) {
-    console.log(`getting tx status for: ${cosmosTx.transactionHash}`)
+    console.log(`getting tx status for: ${txHash}`);
     try {
-      const status = await squid.getStatus({ transactionId: cosmosTx.transactionHash })
+      const status = (await squid.getStatus({
+        transactionId: txHash,
+        fromChainId: fromChainId,
+      })) as any;
       console.log(status);
-      /*  if (!!status.routeStatus && !!status.routeStatus.find((s) => s.chainName === "avalanche" && s.status === "success")) {
-         statusResult = true;
-         console.log("########### tx success ############")
-       } */
+      if (!!status.routeStatus) {
+        if (
+          !!status.routeStatus.find(
+            (s) => s.chainName === "osmosis-6" && s.status === "success"
+          )
+        ) {
+          statusResult = true;
+          console.log("########### tx success ############");
+          break;
+        }
+      }
     } catch (error) {
-      //do nothing
-      console.log(error)
+      console.log("not found yet..");
+      await sleep(3);
+      console.log(error);
     }
-    await sleep(1);
   }
-
 })();
 
 const sleep = async (time: number) => {
   new Promise((r) => setTimeout(r, time * 1000));
-}
+};

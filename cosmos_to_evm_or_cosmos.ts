@@ -86,7 +86,7 @@ if (!mnemonic)
       if (!!status.routeStatus) {
         if (
           !!status.routeStatus.find(
-            (s) => s.chainName === "osmosis-6" && s.status === "success"
+            (s) => s.chainName === toChainId && s.status === "success"
           )
         ) {
           statusResult = true;
